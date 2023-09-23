@@ -177,7 +177,6 @@
         <option value="playlist2">Playlist 2</option>
         <!-- Add more options as needed -->
     </select>
-
     <button type="submit">Upload</button>
 </form>
 
