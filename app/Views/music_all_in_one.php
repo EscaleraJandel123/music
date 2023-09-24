@@ -56,10 +56,6 @@
             <h2 class="text-center">Upload Music</h2>
             <form action="<?= site_url('music/upload') ?>" method="post" enctype="multipart/form-data">
                 <div class="mb-3">
-                    <label for="title" class="form-label">Title:</label>
-                    <input type="text" name="title" class="form-control" required>
-                </div>
-                <div class="mb-3">
                     <label for="music_file" class="form-label">Select Music:</label>
                     <input type="file" name="music_file" class="form-control" accept=".mp3, .ogg" required>
                 </div>

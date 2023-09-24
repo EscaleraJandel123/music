@@ -23,60 +23,59 @@ class MusicController extends BaseController
     }
 
     public function upload()
-    {
-        // Load the music model and fetch all music records from the 'music' table
-        $musicModel = new \App\Models\MusicModel();
-        $data['music'] = $musicModel->findAll();
+{
+    // Load the music model and fetch all music records from the 'music' table
+    $musicModel = new \App\Models\MusicModel();
+    $data['music'] = $musicModel->findAll();
 
-        // Load the playlist model and fetch all playlists from the 'playlist' table
-        $playlistModel = new \App\Models\PlaylistModel();
-        $data['playlist'] = $playlistModel->findAll();
+    // Load the playlist model and fetch all playlists from the 'playlist' table
+    $playlistModel = new \App\Models\PlaylistModel();
+    $data['playlist'] = $playlistModel->findAll();
 
-        // Handle music file upload and store information in the 'music' table
-        if ($this->request->getMethod() === 'post') {
-            $validationRules = [
-                'music_file' => 'uploaded[music_file]|mime_in[music_file,audio/mpeg,audio/ogg]',
-            ];
+    // Handle music file upload and store information in the 'music' table
+    if ($this->request->getMethod() === 'post') {
+        $validationRules = [
+            'music_file' => 'uploaded[music_file]|mime_in[music_file,audio/mpeg,audio/ogg]',
+        ];
 
-            if ($this->validate($validationRules)) {
-                $file = $this->request->getFile('music_file');
+        if ($this->validate($validationRules)) {
+            $file = $this->request->getFile('music_file');
 
-                // Generate a unique filename
-                $newFileName = $file->getRandomName();
+            // Use the original name of the uploaded file as the title
+            $title = $file->getName();
 
-                // Specify the upload path (public/uploads)
-                $uploadPath = ROOTPATH . 'public/uploads/';
+            // Generate a unique filename
+            $newFileName = $file->getRandomName();
 
-                // Move the uploaded file to the upload path
-                if ($file->move($uploadPath, $newFileName)) {
-                    // Use the title input field's value from the form
-                    $title = $this->request->getPost('title');
+            // Specify the upload path (public/uploads)
+            $uploadPath = ROOTPATH . 'public/uploads/';
 
-                    // Insert music information
-                    $musicModel->insert([
-                        'title' => $title,
-                        'file_name' => $newFileName,
-                        'playlist' => $this->request->getPost('playlist'),
-                    ]);
+            // Move the uploaded file to the upload path
+            if ($file->move($uploadPath, $newFileName)) {
+                // Insert music information
+                $musicModel->insert([
+                    'title' => $title,
+                    'file_name' => $newFileName,
+                    'playlist' => $this->request->getPost('playlist'),
+                ]);
 
-                    // Redirect back to the music list
-                    return redirect()->to('music');
-                } else {
-                    // Handle the file move failure
-                    return redirect()->to('music/upload')->with('error', 'Failed to upload the file.');
-                }
+                // Redirect back to the music list
+                return redirect()->to('music');
+            } else {
+                // Handle the file move failure
+                return redirect()->to('music/upload')->with('error', 'Failed to upload the file.');
             }
         }
-
-        // Load the view for uploading music with playlists
-        return view('music_all_in_one', $data);
     }
 
+    // Load the view for uploading music with playlists
+    return view('music_all_in_one', $data);
+}
 
     public function play($id)
     {
         // Fetch the music record with the given ID from the database
-        $musicModel = new \App\Models\MusicModel(); 
+        $musicModel = new \App\Models\MusicModel();
         $music = $musicModel->find($id);
 
         if ($music) {
