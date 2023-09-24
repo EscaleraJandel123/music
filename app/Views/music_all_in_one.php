@@ -53,12 +53,12 @@
             </table>
         </div>
 
-
-
         <!-- Music Play -->
         <?php if (isset($music_to_play)): ?>
             <div class="mb-4">
-                <h2>Play Music</h2>
+                <h2>Now playing</h2>
+                <h3><strong>Title:</strong> <?= $music_to_play['title'] ?></h3>
+                <h5><strong>Playlist: <?= $music_to_play['playlist'] ?></strong></h5><br>
                 <audio controls>
                     <source src="<?= base_url('uploads/' . $music_to_play['file_name']) ?>" type="audio/mpeg">
                     <!-- Specify the correct MIME type for the audio file -->
