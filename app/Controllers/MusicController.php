@@ -6,53 +6,72 @@ use CodeIgniter\Controller;
 
 class MusicController extends BaseController
 {
+    // In your MusicController.php
+
     public function index()
     {
-        // Fetch the list of uploaded music from the database
-        $musicModel = new \App\Models\MusicModel(); // Replace with your actual model class name
+        // Fetch the list of uploaded music from the 'music' table
+        $musicModel = new \App\Models\MusicModel();
         $data['music'] = $musicModel->findAll();
 
-        // Load the view to display the list of music
+        // Fetch the list of playlists from the 'playlist' table
+        $playlistModel = new \App\Models\PlaylistModel();
+        $data['playlist'] = $playlistModel->findAll();
+
+        // Load the view to display the list of music and playlists
         return view('music_all_in_one', $data);
     }
 
     public function upload()
-    {
-        // Handle music file upload and store information in the database
-        if ($this->request->getMethod() === 'post') {
-            $validationRules = [
-                'title' => 'required',
-                'music_file' => 'uploaded[music_file]|mime_in[music_file,audio/mpeg,audio/ogg]',
-                'playlist' => 'required',
-            ];
-    
-            if ($this->validate($validationRules)) {
+{
+    // Load the music model and fetch all music records from the 'music' table
+    $musicModel = new \App\Models\MusicModel();
+    $data['music'] = $musicModel->findAll();
+
+    // Load the playlist model and fetch all playlists from the 'playlist' table
+    $playlistModel = new \App\Models\PlaylistModel();
+    $data['playlist'] = $playlistModel->findAll();
+
+    // Handle music file upload and store information in the 'music' table
+    if ($this->request->getMethod() === 'post') {
+        $validationRules = [
+            'music_file' => 'uploaded[music_file]|mime_in[music_file,audio/mpeg,audio/ogg]',
+        ];
+
+        if ($this->validate($validationRules)) {
+            $file = $this->request->getFile('music_file');
+
+            // Generate a unique filename
+            $newFileName = $file->getRandomName();
+
+            // Specify the upload path (public/uploads)
+            $uploadPath = ROOTPATH . 'public/uploads/';
+
+            // Move the uploaded file to the upload path
+            if ($file->move($uploadPath, $newFileName)) {
+                // Use the title input field's value from the form
                 $title = $this->request->getPost('title');
-                $file = $this->request->getFile('music_file');
-                $playlist = $this->request->getPost('playlist');
-    
-                // Generate a unique filename
-                $newFileName = $file->getRandomName();
-    
-                // Move the uploaded file to a directory (assuming 'uploads' is your directory)
-                $file->move(ROOTPATH . 'public/uploads', $newFileName);
-    
-                // Insert music information into the database along with the selected playlist
-                $musicModel = new \App\Models\MusicModel(); // Replace with your actual model class name
+
+                // Insert music information into the 'music' table with the input title
                 $musicModel->insert([
                     'title' => $title,
                     'file_name' => $newFileName,
-                    'playlist' => $playlist, // Assuming 'playlist' is the column name in your database
+                    'playlist' => $this->request->getPost('playlist'),
                 ]);
-    
+
                 // Redirect back to the music list
                 return redirect()->to('music');
+            } else {
+                // Handle the file move failure, e.g., display an error message
+                return redirect()->to('music/upload')->with('error', 'Failed to upload the file.');
             }
         }
-    
-        // Load the view for uploading music
-        return view('music_all_in_one');
     }
+
+    // Load the view for uploading music with playlists
+    return view('music_all_in_one', $data);
+}
+
     
     public function play($id)
     {

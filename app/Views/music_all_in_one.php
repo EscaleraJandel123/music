@@ -8,21 +8,7 @@
     <!-- Include Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<script>
-        // JavaScript function to set the title field based on the selected file
-        function setFileNameAsTitle() {
-            var fileInput = document.getElementById('music_file');
-            var titleInput = document.getElementById('title');
 
-            // Check if a file is selected
-            if (fileInput.files.length > 0) {
-                // Get the file name (without extension)
-                var fileName = fileInput.files[0].name.replace(/\.[^/.]+$/, "");
-                // Set the title input field to the file name
-                titleInput.value = fileName;
-            }
-        }
-    </script>
 <body>
     <div class="container mt-5">
         <h1 class="text-center mb-4">Music Management</h1>
@@ -30,21 +16,39 @@
         <!-- Music List -->
         <div class="mb-4">
             <h2 class="text-center">Music List</h2>
-            <ul class="list-group">
-                <?php foreach ($music as $song): ?>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <?= $song['title'] ?>
-                        <span>
-                            <?= $song['playlist'] ?>
-                        </span>
-                        <div>
-                            <a href="<?= site_url('music/play/' . $song['id']) ?>" class="btn btn-primary btn-sm">Play</a>
-                            <a href="<?= site_url('music/delete/' . $song['id']) ?>"
-                                class="btn btn-danger btn-sm">Delete</a>
-                        </div>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Playlist</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (isset($music) && count($music) > 0): ?>
+                        <?php foreach ($music as $song): ?>
+                            <tr>
+                                <td>
+                                    <?= $song['title'] ?>
+                                </td>
+                                <td>
+                                    <?= $song['playlist'] ?>
+                                </td>
+                                <td>
+                                    <a href="<?= site_url('music/play/' . $song['id']) ?>"
+                                        class="btn btn-primary btn-sm">Play</a>
+                                    <a href="<?= site_url('music/delete/' . $song['id']) ?>"
+                                        class="btn btn-danger btn-sm">Delete</a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="3" class="text-center">No music available.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
 
         <!-- Music Upload -->
@@ -60,13 +64,19 @@
                     <input type="file" name="music_file" class="form-control" accept=".mp3, .ogg" required>
                 </div>
                 <div class="mb-3">
-                    <label for="playlist" class="form-label">Select Playlist:</label>
-                    <select name="playlist" class="form-select">
-                        <option value="none">Select a Playlist</option>
-                        <option value="playlist1">Playlist 1</option>
-                        <option value="playlist2">Playlist 2</option>
-                        <!-- Add more options as needed -->
-                    </select>
+                    <div class="mb-3">
+                        <label for="playlist" class="form-label">Select Playlist:</label>
+                        <select name="playlist" class="form-select">
+                            <option value="none">Select a Playlist</option>
+                            <?php if (isset($playlist)): ?>
+                                <?php foreach ($playlist as $pl): ?>
+                                    <option value="<?= $pl['playlist_name'] ?>">
+                                        <?= $pl['playlist_name'] ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </select>
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-success">Upload</button>
             </form>
@@ -78,9 +88,9 @@
                 <h2>Play Music</h2>
                 <audio controls>
                     <source src="<?= base_url('uploads/' . $music_to_play['file_name']) ?>" type="audio/mpeg">
+                    <!-- Specify the correct MIME type for the audio file -->
                     Your browser does not support the audio element.
                 </audio>
-
             </div>
             <a href="javascript:history.back()" class="btn btn-primary">Go Back</a>
         <?php endif; ?>
@@ -106,5 +116,3 @@
 </body>
 
 </html>
-
-
