@@ -15,8 +15,9 @@
 
         <!-- Music List -->
         <div class="mb-4">
+            <!-- Search -->
             <h2 class="text-center">Search Music</h2>
-            <input type="text" id="searchInput" class="form-control" placeholder="Search by Title and playlist">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search by Title and Playlist">
             <br>
             <span><a class="btn btn-success" href="/upload">Upload</a></span>
             <span><a class="btn btn-success" href="music/add_playlist">Add new playlist</a></span>
