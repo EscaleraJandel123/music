@@ -13,14 +13,13 @@
     <div class="container mt-5">
         <h1 class="text-center mb-4">Music Management</h1>
 
-        <!-- Music Search -->
-        <div class="mb-4">
-            <h2 class="text-center">Search Music</h2>
-            <input type="text" id="searchInput" class="form-control" placeholder="Search by Title">
-        </div>
+
 
         <!-- Music List -->
         <div class="mb-4">
+            <h2 class="text-center">Search Music</h2>
+            <input type="text" id="searchInput" class="form-control" placeholder="Search by Title and playlist">
+            <br>
             <span><a class="btn btn-success" href="/upload">Upload</a></span>
             <h2 class="text-center">Music List</h2>
 
@@ -63,8 +62,12 @@
         <?php if (isset($music_to_play)): ?>
             <div class="mb-4">
                 <h2>Now playing</h2>
-                <h3><strong>Title:</strong> <?= $music_to_play['title'] ?></h3>
-                <h5><strong>Playlist: <?= $music_to_play['playlist'] ?></strong></h5><br>
+                <h3><strong>Title:</strong>
+                    <?= $music_to_play['title'] ?>
+                </h3>
+                <h5><strong>Playlist:
+                        <?= $music_to_play['playlist'] ?>
+                    </strong></h5><br>
                 <audio controls>
                     <source src="<?= base_url('uploads/' . $music_to_play['file_name']) ?>" type="audio/mpeg">
                     <!-- Specify the correct MIME type for the audio file -->
@@ -92,7 +95,7 @@
     <!-- Include Bootstrap JS and jQuery (optional) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
+
     <script>
         // JavaScript for live search
         $(document).ready(function () {
