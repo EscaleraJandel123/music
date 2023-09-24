@@ -6,10 +6,52 @@ use CodeIgniter\Controller;
 
 class MusicController extends BaseController
 {
-    // In your MusicController.php
+    public function delete_playlist($id)
+{
+    // Load the playlist model
+    $playlistModel = new \App\Models\PlaylistModel();
+
+    // Find the playlist with the given ID
+    $playlist = $playlistModel->find($id);
+
+    if ($playlist) {
+        // Delete the playlist
+        $playlistModel->delete($id);
+
+        // Redirect back to the music management page
+        return redirect()->to('music/add_playlist');
+    } else {
+        // Playlist not found, you can handle this accordingly
+        return redirect()->to('music');
+    }
+}
+
+    public function add_playlist()
+{
+    $playlistModel = new \App\Models\PlaylistModel();
+        $data['playlist'] = $playlistModel->findAll();
+
+    if ($this->request->getMethod() === 'post') {
+        // Get the playlist name from the form input
+        $playlistName = $this->request->getPost('playlist_name');
+
+        // Load the playlist model
+        $playlistModel = new \App\Models\PlaylistModel();
+
+        // Insert the new playlist into the 'playlist' table
+        $playlistModel->insert([
+            'playlist_name' => $playlistName,
+        ]);
+
+        // Redirect back to the music management
+        return redirect()->to('music/add_playlist');
+    }
+    return view('uploadPlaylist', $data);
+    
+}
+
     public function uploadform()
     {
-    
         $playlistModel = new \App\Models\PlaylistModel();
         $data['playlist'] = $playlistModel->findAll();
         return view('upload' ,$data);
@@ -29,54 +71,55 @@ class MusicController extends BaseController
     }
 
     public function upload()
-    {
-        // Load the music model and fetch all music records from the 'music' table
-        $musicModel = new \App\Models\MusicModel();
-        $data['music'] = $musicModel->findAll();
+{
+    // Load the music model and fetch all music records from the 'music' table
+    $musicModel = new \App\Models\MusicModel();
+    $data['music'] = $musicModel->findAll();
 
-        // Load the playlist model and fetch all playlists from the 'playlist' table
-        $playlistModel = new \App\Models\PlaylistModel();
-        $data['playlist'] = $playlistModel->findAll();
+    // Load the playlist model and fetch all playlists from the 'playlist' table
+    $playlistModel = new \App\Models\PlaylistModel();
+    $data['playlist'] = $playlistModel->findAll();
 
-        // Handle music file upload and store information in the 'music' table
-        if ($this->request->getMethod() === 'post') {
-            $validationRules = [
-                'music_file' => 'uploaded[music_file]|mime_in[music_file,audio/mpeg,audio/ogg]',
-            ];
+    // Handle music file upload and store information in the 'music' table
+    if ($this->request->getMethod() === 'post') {
+        $validationRules = [
+            'music_file' => 'uploaded[music_file]|mime_in[music_file,audio/mpeg,audio/ogg]',
+        ];
 
-            if ($this->validate($validationRules)) {
-                $file = $this->request->getFile('music_file');
+        if ($this->validate($validationRules)) {
+            $file = $this->request->getFile('music_file');
 
-                // Use the original name of the uploaded file as the title
-                $title = $file->getName();
+            // Use the original name of the uploaded file as the title
+            $title = $file->getName();
 
-                // Generate a unique filename
-                $newFileName = $file->getRandomName();
+            // Generate a unique filename
+            $newFileName = $file->getRandomName();
 
-                // Specify the upload path (public/uploads)
-                $uploadPath = ROOTPATH . 'public/uploads/';
+            // Specify the upload path (public/uploads)
+            $uploadPath = ROOTPATH . 'public/uploads/';
 
-                // Move the uploaded file to the upload path
-                if ($file->move($uploadPath, $newFileName)) {
-                    // Insert music information
-                    $musicModel->insert([
-                        'title' => $title,
-                        'file_name' => $newFileName,
-                        'playlist' => $this->request->getPost('playlist'),
-                    ]);
+            // Move the uploaded file to the upload path
+            if ($file->move($uploadPath, $newFileName)) {
+                // Insert music information
+                $musicModel->insert([
+                    'title' => $title,
+                    'file_name' => $newFileName,
+                    'playlist' => $this->request->getPost('playlist'),
+                ]);
 
-                    // Redirect back to the music list
-                    return redirect()->to('music');
-                } else {
-                    // Handle the file move failure
-                    return redirect()->to('music/upload')->with('error', 'Failed to upload the file.');
-                }
+                // Redirect back to the music list
+                return redirect()->to('music');
+            } else {
+                // Handle the file move failure
+                return redirect()->to('music/upload')->with('error', 'Failed to upload the file.');
             }
         }
-
-        // Load the view for uploading music with playlists
-        return view('music_all_in_one', $data);
     }
+
+    // Load the view for uploading music with playlists
+    return view('music_all_in_one', $data);
+}
+
 
     public function play($id)
     {
@@ -130,7 +173,7 @@ class MusicController extends BaseController
             // Redirect back to the music list
             return redirect()->to('music');
         } else {
-            // Music not found, you can handle this accordingly
+            // Music not found
             return redirect()->to('music');
         }
     }
