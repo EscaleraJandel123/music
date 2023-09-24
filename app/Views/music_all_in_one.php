@@ -15,7 +15,9 @@
 
         <!-- Music List -->
         <div class="mb-4">
-            <h2 class="text-center">Music List</h2>
+            <h2 class="text-center">Music List</h2><span>
+                <a class="btn btn-success" href="/upload">Upload</a>
+            </span>
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -51,32 +53,7 @@
             </table>
         </div>
 
-        <!-- Music Upload -->
-        <div class="mb-4">
-            <h2 class="text-center">Upload Music</h2>
-            <form action="<?= site_url('music/upload') ?>" method="post" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <label for="music_file" class="form-label">Select Music:</label>
-                    <input type="file" name="music_file" class="form-control" accept=".mp3, .ogg" required>
-                </div>
-                <div class="mb-3">
-                    <div class="mb-3">
-                        <label for="playlist" class="form-label">Select Playlist:</label>
-                        <select name="playlist" class="form-select">
-                            <option value="none">Select a Playlist</option>
-                            <?php if (isset($playlist)): ?>
-                                <?php foreach ($playlist as $pl): ?>
-                                    <option value="<?= $pl['playlist_name'] ?>">
-                                        <?= $pl['playlist_name'] ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </select>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-success">Upload</button>
-            </form>
-        </div>
+
 
         <!-- Music Play -->
         <?php if (isset($music_to_play)): ?>
