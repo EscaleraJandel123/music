@@ -52,7 +52,7 @@ class MusicController extends BaseController
                     // Use the title input field's value from the form
                     $title = $this->request->getPost('title');
 
-                    // Insert music information into the 'music' table with the input title
+                    // Insert music information
                     $musicModel->insert([
                         'title' => $title,
                         'file_name' => $newFileName,
@@ -62,7 +62,7 @@ class MusicController extends BaseController
                     // Redirect back to the music list
                     return redirect()->to('music');
                 } else {
-                    // Handle the file move failure, e.g., display an error message
+                    // Handle the file move failure
                     return redirect()->to('music/upload')->with('error', 'Failed to upload the file.');
                 }
             }
@@ -76,7 +76,7 @@ class MusicController extends BaseController
     public function play($id)
     {
         // Fetch the music record with the given ID from the database
-        $musicModel = new \App\Models\MusicModel(); // Replace with your actual model class name
+        $musicModel = new \App\Models\MusicModel(); 
         $music = $musicModel->find($id);
 
         if ($music) {
@@ -86,7 +86,7 @@ class MusicController extends BaseController
             // Load the view to play the music
             return view('music_all_in_one', ['music_to_play' => $music, 'music_path' => $musicPath]);
         } else {
-            // Music not found, you can handle this accordingly
+            // Music not found
             return redirect()->to('music');
         }
     }
