@@ -9,7 +9,10 @@ class MusicController extends BaseController
     // In your MusicController.php
     public function uploadform()
     {
-        return view('upload');
+    
+        $playlistModel = new \App\Models\PlaylistModel();
+        $data['playlist'] = $playlistModel->findAll();
+        return view('upload' ,$data);
     }
     public function index()
     {

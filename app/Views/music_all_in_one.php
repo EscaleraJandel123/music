@@ -13,11 +13,17 @@
     <div class="container mt-5">
         <h1 class="text-center mb-4">Music Management</h1>
 
+        <!-- Music Search -->
+        <div class="mb-4">
+            <h2 class="text-center">Search Music</h2>
+            <input type="text" id="searchInput" class="form-control" placeholder="Search by Title">
+        </div>
+
         <!-- Music List -->
         <div class="mb-4">
-            <h2 class="text-center">Music List</h2><span>
-                <a class="btn btn-success" href="/upload">Upload</a>
-            </span>
+            <span><a class="btn btn-success" href="/upload">Upload</a></span>
+            <h2 class="text-center">Music List</h2>
+
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -86,6 +92,18 @@
     <!-- Include Bootstrap JS and jQuery (optional) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <script>
+        // JavaScript for live search
+        $(document).ready(function () {
+            $("#searchInput").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("tbody tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>
